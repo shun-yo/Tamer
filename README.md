@@ -6,7 +6,7 @@
 
 ## Components
 
-- ```auto_interact.py`` is a tool to interact with QEMU using ``expect``. (So it requires ``pexpect``.)
+- ```auto_interact.py``` is a tool to interact with QEMU using ```expect```. (So it requires ```pexpect```.)
 
 - ...
 
