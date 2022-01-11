@@ -1,0 +1,2 @@
+/home/shun/Tools/latest/work20181228/panda-re/build-panda/i386-softmmu/qemu-system-i386 -drive file=/home/shun/Tools/qcow_images/debian7_32_exploit.qcow2 -m 128 -monitor stdio -k en-us -netdev tap,ifname=vport1,script=no,downscript=no,id=testmynet0 -device e1000,netdev=testmynet0,mac=52:55:00:d1:55:08 -vnc :1
+backup_before_malware_execute_20190818_with_curl_strace

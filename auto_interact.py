@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
+
 import sys
 import pexpect
 from time import sleep
@@ -114,7 +116,7 @@ cmdfile = args[1]
 malware_list = args[2]
 record_duration = args[3]
 qemu_conf = args[4]
-
+malware_repository_ipaddr = args[5]
 
 
 cmds = []
@@ -149,6 +151,13 @@ snapshot_name = qemu_conf_list[1]
 child = pexpect.spawn(qemu_cmdline)
 child.logfile_read = sys.stdout.buffer
 
+#print(cmds)
+#print(malsamples)
+#print(qemu_conf_list)
+#print(qemu_cmdline)
+#print(snapshot_name)
+#print(cmds[0])
+#print(type(cmds[0]))
 
 
 def sendkey_os_command(cmd_str):
@@ -162,7 +171,7 @@ def sendkey_os_command(cmd_str):
     child.expect("(qemu)")
     child.sendline("sendkey kp_enter\n")
 
-
+    
 
 
 def loadvm_snapshot():
@@ -182,13 +191,15 @@ def run_procedures(malware_exec_filename):
         if cmd[0] == "#":
             continue
 
-        cmd = cmd.replace("<FILENAME>", malware_exec_filename)
+        cmd = cmd.replace("<FILENAME>", malware_exec_filename) 
         datetime_now = datetime.now().strftime("%Y%m%d_%I%M%S")
         cmd = cmd.replace("<DATETIME>", datetime_now)
+        cmd = cmd.replace("<MALWARE_REPOSITORY>", malware_repository_ipaddr)
 
         cmd_args = cmd.split(" ")
         cmd_arg0 = cmd_args[0]
-        
+        #cmd_arg1 = cmd[1]
+
 
         if cmd_arg0 == "begin_record":
             child.expect("(qemu)")
@@ -207,12 +218,19 @@ def run_procedures(malware_exec_filename):
             child.expect("(qemu)")
             sleep(20)
             child.sendline("\n")
+        elif cmd_arg0 == "getlog":
+            child.expect("(qemu)")
+            sleep(int(record_duration))
+            sleep(2)
+            print("\nStarting file copy..\n")
+            child.sendline("sendkey ctrl-z 30" + "\n")
+            child.sendline("\n")
         else:
             child.expect("(qemu)")
             print("\nSleeping..\n")
             sleep(7)
             child.sendline("\n")
-            sendkey_os_command(cmd)
+            sendkey_os_command(cmd) 
 
 def main():
 
@@ -235,4 +253,3 @@ def main():
 if __name__ == "__main__":
     pass
     main()
-
