@@ -1,0 +1,13 @@
+wget http://<MALWARE_REPOSITORY>:8000/<FILENAME> -O ./iotmal
+<WAIT>
+chmod +x iotmal
+mkdir /etc/rc.d
+touch /etc/rc.d/rc.local
+echo "aaaaa" > /etc/rc.d/rc.local
+mkdir /etc/init.d
+touch /etc/init.d/boot.local
+echo "aaaaa" > /etc/init.d/boot.local
+<WAIT>
+begin_record iotmal_<FILENAME>_<DATETIME>
+./iotmal
+end_record

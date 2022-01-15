@@ -1,0 +1,10 @@
+wget http://<MALWARE_REPOSITORY>:8000/<FILENAME> -O ./iotmal
+<WAIT>
+chmod +x iotmal
+<WAIT>
+strace -tt -f -s 2048 -y -o log.txt ./iotmal 
+getlog 
+<WAIT>
+curl -T log.txt http://<MALWARE_REPOSITORY>:8000/log_iotmal_<FILENAME>_<DATETIME>.txt
+<WAIT>
+<WAIT>

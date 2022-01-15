@@ -1,0 +1,2 @@
+/home/shun/Tools/latest/work20181228/build-panda/arm-softmmu/qemu-system-arm -M versatilepb -kernel /home/shun/Tools/Tamer_demo/qcow_images/ARM/arm-linux-3.2.1/zImage_linux321 -hda /home/shun/Tools/Tamer_demo/qcow_images/ARM/arm-linux-3.2.1/debian_squeeze_armel_standard.qcow2 -append "root=/dev/sda1" -net nic -net tap,ifname=vport1,script=no,downscript=no -monitor stdio -vnc :1
+backup_before_malware_execute_With-strace-curl_20210411
