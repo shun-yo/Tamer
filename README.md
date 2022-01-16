@@ -22,9 +22,19 @@ Tamer is a sandbox to execute a malware executable in a controlled environment a
 ./tamer.sh analyzed_samples/mirai_md5.txt <IP-address of malware repository's server>
 ```
 
-## Use-case Examples
+## Use case 
 
-(update soon.)
+### Case 1. Getting syscall logs for all samples in a dataset
+
+
+
+As a simple use case, it automate to perform all steps (download samples, launch syscall monitoring, run malware) to perform dynamic malware analysis.
+
+ As a result, it allows to perform analyzing invoked syscalls on a lot of samples in an automated manner.
+
+![Perform dynamic analysis on Mirai](./docs/images/screen_01.png)
+
+
 
 ## Dataset
 
