@@ -8,7 +8,7 @@ Tamer is a sandbox to execute a malware executable in a controlled environment a
 
 - ```tamer.sh``` launches sandbox and execute a malware executables that are listed in an external config file.
 
-- ```auto_interact.py``` is a tool to interact with QEMU using ```expect```. So, it requires ```pexpect```. The applicable usage of ```expect``` for our purpose is based on the demo in this [link](https://youtu.be/kdWX0ZWo_8o).
+- ```auto_interact.py``` is a tool to interact with QEMU using ```expect```. So, it requires ```pexpect```. The applicable usage of ```expect``` for our purpose is based on the demo in this [video link](https://youtu.be/kdWX0ZWo_8o).
 
 - ```setup_network_config.py``` performs network settings to make a closed and controlled network environment adapted for malware analysis. (It uses ```iptables``` and make settings around linux virtual bridges using ```brctl``` and TUN/TAP interfaces.)
 
