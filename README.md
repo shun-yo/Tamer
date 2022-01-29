@@ -26,7 +26,7 @@ Tamer is a sandbox to execute a malware executable in a controlled environment a
 
 ### Case 1. Getting syscall logs for all samples in a dataset
 
-This use case can be seen in the video as shown in this [link](https://youtu.be/OfKhdMzeMpA)
+This use case can be seen in the demo video as shown in this [link](https://youtu.be/OfKhdMzeMpA).
 
 
 As a simple use case, it automate to perform all steps (download samples, launch syscall monitoring, run malware) to perform dynamic malware analysis.
