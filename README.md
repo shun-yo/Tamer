@@ -18,9 +18,13 @@ Tamer is a sandbox to execute a malware executable in a controlled environment a
 
 ## Usage
 
+To start analysis, execute as follows.
+
 ```
 ./tamer.sh analyzed_samples/mirai_md5.txt <IP-address of malware repository's server>
 ```
+
+
 
 ## Use case 
 
