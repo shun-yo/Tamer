@@ -24,7 +24,7 @@ To start analysis, execute as follows.
 ./tamer.sh analyzed_samples/mirai_md5.txt <IP-address of malware repository's server>
 ```
 
-
+Note that the sandbox launches virtual machines on QEMU. Since the size of qcow2 images is large, contact [us](<mailto:yonamine.shun.yl6@is.naist.jp>) if request the images that we built. Note that the sandbox launches virtual machines on QEMU. Since the size of qcow2 images is large, contact us if request the images that we built. Of course, it will be okay to use your own qcow2 images and combine with ``auto_interact.py``.
 
 ## Use case 
 
