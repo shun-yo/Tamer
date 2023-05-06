@@ -1,6 +1,6 @@
 # How to compile
 
-I added a little modification to the code of PANDA. Please apply the patch modified.patch as follows. After applying the patch, build PANDA. (The platform I used is ubuntu14.04.)
+Optionally, it is OK to combine with QEMU built for PANDA. I added a little modification to the code of PANDA. Please apply the patch modified.patch as follows. After applying the patch, build PANDA. (The platform I used is ubuntu14.04.)
 
 ```
 % git clone https://github.com/panda-re/panda.git
