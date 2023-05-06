@@ -1,0 +1,101 @@
+Binary files panda/.git/index and panda_modified/.git/index differ
+diff -rupN panda/hw/net/smc91c111.c panda_modified/hw/net/smc91c111.c
+--- panda/hw/net/smc91c111.c	2023-05-06 11:36:17.180966000 +0900
++++ panda_modified/hw/net/smc91c111.c	2023-05-06 11:37:08.964966000 +0900
+@@ -14,6 +14,9 @@
+ /* For crc32 */
+ #include <zlib.h>
+ 
++#include "panda/network.h"
++#include "panda/rr/rr_log_all.h"
++
+ /* Number of 2k memory pages available.  */
+ #define NUM_PACKETS 4
+ 
+@@ -263,6 +266,15 @@ static void smc91c111_do_tx(smc91c111_st
+             smc91c111_release_packet(s, packetnum);
+         else if (s->tx_fifo_done_len < NUM_PACKETS)
+             s->tx_fifo_done[s->tx_fifo_done_len++] = packetnum;
++
++///////////////////
++        if (rr_in_record()){
++            rr_record_handle_packet_call(RR_CALLSITE_E1000_XMIT_SEG_1, p,
++                                         len, PANDA_NET_TX);
++        }
++///////////////////
++
++
+         qemu_send_packet(qemu_get_queue(s->nic), p, len);
+     }
+     s->tx_fifo_len = 0;
+@@ -739,6 +751,14 @@ static ssize_t smc91c111_receive(NetClie
+     /* TODO: Raise early RX interrupt?  */
+     s->int_level |= INT_RCV;
+     smc91c111_update(s);
++///////////////////
++    if (rr_in_record()){
++        // RW First, handle packet
++        rr_record_handle_packet_call(RR_CALLSITE_E1000_RECEIVE_2,
++                                     (void *)(&s->data[packetnum][0] + 4), size,
++                                     PANDA_NET_RX);
++    }
++///////////////////
+ 
+     return size;
+ }
+diff -rupN panda/panda/plugins/osi_linux/osi_linux.cpp panda_modified/panda/plugins/osi_linux/osi_linux.cpp
+--- panda/panda/plugins/osi_linux/osi_linux.cpp	2023-05-06 11:36:26.304966000 +0900
++++ panda_modified/panda/plugins/osi_linux/osi_linux.cpp	2023-05-06 11:37:14.944966000 +0900
+@@ -297,9 +297,31 @@ void on_get_process_handles(CPUState *en
+  * @brief PPP callback to retrieve info about the currently running process.
+  */
+ void on_get_current_process(CPUState *env, OsiProc **out) {
++
++
+ 	OsiProc *p = NULL;
++
++
++#if defined(TARGET_ARM)
++    #define THREAD_SIZE 8192
++    CPUArchState* cpu = (CPUArchState*)env->env_ptr;
++    uint32_t arm_sp = cpu->regs[13];
++    uint32_t thread_info__p = arm_sp & ~(THREAD_SIZE - 1);
++    struct fmt_thread_info {
++        uint32_t flags;      /* low level flags */
++        uint32_t preempt_count;  /* 0 => preemptable, <0 => bug */
++        uint32_t addr_limit; /* address limit */
++        uint32_t task;      /* main task structure */
++    };
++    uint8_t *data_thread_info = (uint8_t*)malloc(sizeof(struct fmt_thread_info));
++    panda_virtual_memory_rw(env, thread_info__p, data_thread_info, sizeof(struct fmt_thread_info), 0);
++    uint32_t task_addr = (uint32_t)((struct fmt_thread_info *)data_thread_info)->task;
++    free(data_thread_info);
++    target_ptr_t ts = (target_ptr_t)task_addr;
++#else
+ 	target_ptr_t kernel_esp = panda_current_sp(env);
+ 	target_ptr_t ts = get_task_struct(env, (kernel_esp & THREADINFO_MASK));
++#endif
+ 	if (ts) {
+ 		p = (OsiProc *)g_malloc(sizeof(OsiProc));
+ 		fill_osiproc(env, p, ts);
+@@ -395,7 +417,8 @@ pid_found:
+ 	return;
+ 
+ error0:
+-	g_array_free(*out, true);  // safe even when *out == NULL
++    if(*out)
++        g_array_free(*out, true);  // safe even when *out == NULL
+ 	*out = NULL;
+ 	return;
+ }
+diff -rupN panda/panda/src/common.c panda_modified/panda/src/common.c
+--- panda/panda/src/common.c	2023-05-06 11:36:26.336966000 +0900
++++ panda_modified/panda/src/common.c	2023-05-06 11:39:23.572966000 +0900
+@@ -25,6 +25,7 @@ static inline uint32_t regime_el(CPUARMS
+     case ARMMMUIdx_S1NSE0:
+     case ARMMMUIdx_S1NSE1:
+     case ARMMMUIdx_S12NSE1:
++    case ARMMMUIdx_S12NSE0: // modified
+         return 1;
+     default:
+         g_assert_not_reached();
